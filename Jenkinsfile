@@ -6,6 +6,7 @@ pipeline {
             // you have to call tru env.<var name> ex, env.DOMAIN
             JAR_TARGET = 'backend/target/backend-0.0.1-SNAPSHOT.jar'
             PATH_DEMO_PROPERTIES = 'B:\\env\\demo-info\\docker_info.properties'
+            DOCKER_BACKEND_IMAGE_NAME = 'backend-app'
             DOCKER_UI_IMAGE_NAME = 'ui-app'
             DOCKER_UI_CONTAINER_NAME = 'angular-and-nginx'
             DOCKER_UI_NGINX_PORT_REMOTE = '8080'
@@ -24,6 +25,7 @@ pipeline {
                         env.DOCKER_DB_PASSWORD = props['DOCKER_DB_PASSWORD']
                         env.DOCKER_DB_NAME = props['DOCKER_DB_NAME']
                         env.DOCKER_DB_PORT_REMOTE = props['DOCKER_DB_PORT_REMOTE']
+                        env.IP4 = props['IP4']
                     }
                 }
            }
@@ -107,7 +109,7 @@ pipeline {
 
             stage('Build docker container app') {
                 steps {
-                    sh "docker build -t springboot:latest --build-arg JAR_FILE=${env.JAR_TARGET} --build-arg JDBC_USERNAME=${env.DOCKER_DB_USERNAME} --build-arg JDBC_PASSWORD=${env.DOCKER_DB_PASSWORD} --build-arg JDBC_DATABASE=${env.DOCKER_DB_NAME} . -f backend/dockerfiles/app/Dockerfile"
+                    sh "docker build -t springboot:latest --build-arg JAR_FILE=${env.JAR_TARGET} --build-arg JDBC_USERNAME=${env.DOCKER_DB_USERNAME} --build-arg JDBC_PASSWORD=${env.DOCKER_DB_PASSWORD} --build-arg JDBC_DATABASE=${env.DOCKER_DB_NAME} --build-arg IP4=${env.IP4} . -f backend/dockerfiles/app/Dockerfile"
                 }
                 post {
                      success {
@@ -121,7 +123,7 @@ pipeline {
 
             stage('Deploy docker image app') {
                 steps {
-                    sh "docker run --name springboot_app -p ${env.DOCKER_APP_PORT_REMOTE}:6789 -d springboot:latest"
+                    sh "docker run --name ${env.DOCKER_BACKEND_IMAGE_NAME} -p ${env.DOCKER_APP_PORT_REMOTE}:6789 -d springboot:latest"
                 }
                 post {
                       success {
