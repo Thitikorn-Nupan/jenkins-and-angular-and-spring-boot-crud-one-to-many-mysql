@@ -11,13 +11,13 @@ WORKDIR /home/app
 
 # Copy files from local machine to virtual directory in docker image
 # Note ../.. means you are position on build-basic-webapp-using-angular and . after ../.. means copy ../.. to WORKDIR <...>
-COPY /frontend/../../package*.json /home/app
+COPY /frontend/package*.json /home/app
 
 # npm ci == npm clean install
 RUN npm ci
 
 # after install copy all to /home/app
-COPY /frontend/../.. /home/app
+COPY /frontend /home/app
 
 # Note npm clean install = npm ci
 #RUN npm clean install && npm run build
