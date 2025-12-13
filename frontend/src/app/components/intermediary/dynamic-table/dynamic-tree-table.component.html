@@ -1,0 +1,72 @@
+<ng-container *ngIf="data">
+  <div class="card p-5" style="margin: 0 auto; max-width: 1200px">
+    <h4 class="text-center">{{ tableTitle }}</h4>
+    <table class="table table-light table-sm ">
+      <thead class="table-dark">
+      <tr>
+        <ng-container *ngFor="let headerColumn of headerColumns; let theLast = last;">
+          <ng-container *ngIf="!theLast">
+            <th scope="col">{{ headerColumn.header }}</th>
+          </ng-container>
+          <ng-container *ngIf="theLast">
+            <th scope="col" class="text-center">{{ headerColumn.header }}</th>
+          </ng-container>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let row of data;">
+        <tr>
+          <ng-container *ngFor="let headerColumn of headerColumns; let theSubLast = last;">
+            <ng-container *ngIf="!theSubLast">
+              <td>{{ row[headerColumn.field] }}</td>
+            </ng-container>
+            <ng-container *ngIf="theSubLast">
+              <td class="text-center">
+                <div class="btn-group">
+                  <button class="btn btn-warning" [disabled]="disableEditButton" (click)="onEdit(row)">Edit</button>
+                  <button class="btn btn-danger" [disabled]="disableRemoveButton" (click)="onRemove(row)">Remove</button>
+                  <ng-container *ngIf="subHeaderColumns">
+                    <button class="btn btn-secondary" [disabled]="disableTreeButton" (click)="onTreeTable(row)">Tree Table</button>
+                  </ng-container>
+                </div>
+              </td>
+            </ng-container>
+          </ng-container>
+        </tr>
+        <!-- ** sub table it on below row you want -->
+        <ng-container *ngIf="enableNestedTable && (this.dataId.value === row[dataId.field])">
+          <div style=" top: 5px; position: relative; left: 1060px"><button type="button" class="btn-close" (click)="onCloseTreeTable()"></button></div>
+          <tr>
+            <!-- ** note the colspan have to follow columns (size) main -->
+            <td [attr.colspan]="headerColumns.length" class="p-3">
+              <table class="table table-light table-sm">
+                <thead class="table-secondary">
+                <tr>
+                  <ng-container *ngFor="let subHeaderColumn of subHeaderColumns; let theLast = last">
+                    <ng-container *ngIf="!theLast">
+                      <th scope="col">{{ subHeaderColumn.header }}</th>
+                    </ng-container>
+                  </ng-container>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngFor="let row of subData">
+                  <tr>
+                    <ng-container *ngFor="let headerColumn of subHeaderColumns; let theSubLast = last;">
+                      <ng-container *ngIf="!theSubLast">
+                        <td>{{ row[headerColumn.field] }}</td>
+                      </ng-container>
+                    </ng-container>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</ng-container>

@@ -1,0 +1,117 @@
+<ng-container *ngIf="formGroup">
+  <div class="card p-5 w-50" style="margin: 0 auto">
+    <h4 class="text-center">{{formTitle}}</h4>
+    <form [formGroup]="formGroup"  class="needs-validation" novalidate> <!-- (ngSubmit)="onSubmit()" -->
+      <ng-container *ngFor="let dynamicValidationForm of dynamicValidationsForm">
+
+        <!-- *** Inputs as type text , email , password  -->
+        <ng-container *ngIf="dynamicValidationForm.isInputText">
+          <div class="mb-3">
+            <label [for]="dynamicValidationForm.id" class="form-label">{{ dynamicValidationForm.label }}</label>
+            <!--
+              [ngClass] is an Angular directive used to dynamically add or remove CSS classes on an HTML element based on a given condition or expression
+              [ngClass]="{ '<the name class css>' :  <the condition> , '<the name class css>' :  <the condition> , ...}">
+              result is on right input box
+            -->
+            <input  [ngClass]="{ 'is-invalid' : !dynamicValidationForm.isReadOnly && formGroup.get(dynamicValidationForm.formControlName)?.invalid , 'is-valid' : !dynamicValidationForm.isReadOnly && formGroup.get(dynamicValidationForm.formControlName)?.valid}" [formControlName]="dynamicValidationForm.formControlName" [id]="dynamicValidationForm.id" [type]="dynamicValidationForm.type" [placeholder]="dynamicValidationForm.placeholder" class="form-control" [readOnly]="dynamicValidationForm.isReadOnly">
+            <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.errors?.['required']" class="invalid-feedback" >
+              {{dynamicValidationForm.invalidMessage}}
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- *** Inputs as type number  -->
+        <ng-container *ngIf="dynamicValidationForm.isInputNumber">
+          <div class="mb-3">
+            <label [for]="dynamicValidationForm.id" class="form-label">{{ dynamicValidationForm.label }}</label>
+            <input [ngClass]="{ 'is-invalid' :  formGroup.get(dynamicValidationForm.formControlName)?.invalid , 'is-valid' : formGroup.get(dynamicValidationForm.formControlName)?.valid}" [formControlName]="dynamicValidationForm.formControlName" [id]="dynamicValidationForm.id" [type]="dynamicValidationForm.type" [step]="dynamicValidationForm.isInputNumber.step" [placeholder]="dynamicValidationForm.placeholder" class="form-control">
+            <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.errors?.['required']" class="invalid-feedback" >
+              {{dynamicValidationForm.invalidMessage}}
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- *** Inputs as dropdown -->
+        <ng-container *ngIf="dynamicValidationForm.isDropdown">
+          <div class="mb-3">
+            <label [for]="dynamicValidationForm.id" class="form-label">{{ dynamicValidationForm.label }}</label>
+            <select [ngClass]="{ 'is-invalid' :  !formGroup.get(dynamicValidationForm.formControlName)?.touched || formGroup.get(dynamicValidationForm.formControlName)?.touched && formGroup.get(dynamicValidationForm.formControlName)?.value === '0' , 'is-valid' : formGroup.get(dynamicValidationForm.formControlName)?.touched && formGroup.get(dynamicValidationForm.formControlName)?.valid}" [formControlName]="dynamicValidationForm.formControlName" [id]="dynamicValidationForm.id" class="form-select" required>
+              <ng-container *ngIf="dynamicValidationForm.isDropdown.options">
+                <ng-container *ngFor="let option of dynamicValidationForm.isDropdown.options; let id = index">
+                  <ng-container *ngIf="id === 0">
+                    <!-- *** Note selected won't work if you don't set on on citiesFieldAsDropdown.formControl -->
+                    <option disabled [value]="option.value">{{option.label}}</option>
+                  </ng-container>
+                  <ng-container *ngIf="id > 0">
+                    <option  [value]="option.value">{{option.label}}</option>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </select>
+            <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.errors?.['required'] || formGroup.get(dynamicValidationForm.formControlName)?.value === '0'" class="invalid-feedback" >
+              {{dynamicValidationForm.invalidMessage}}
+            </div>
+          </div>
+        </ng-container>
+
+
+        <!-- *** Inputs as radio -->
+        <ng-container *ngIf="dynamicValidationForm.isRadio">
+          <label [for]="dynamicValidationForm.id" class="form-check-label" >{{ dynamicValidationForm.label }}</label>
+          <ng-container *ngFor="let option of dynamicValidationForm.isRadio.options">
+            <div class="form-check">
+              <input [ngClass]="{ 'is-invalid' :  formGroup.get(dynamicValidationForm.formControlName)?.invalid , 'is-valid' :  formGroup.get(dynamicValidationForm.formControlName)?.valid}" [formControlName]="dynamicValidationForm.formControlName" [value]="option.value" [name]="dynamicValidationForm.formControlName" [id]="option.id"  type="radio" class="form-check-input" required> <!-- why this radio can't bind -->
+              <label [for]="option.id" class="form-check-label" >{{ option.label }}</label>
+              <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.errors?.['required']" class="invalid-feedback" >
+                {{dynamicValidationForm.invalidMessage}}
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+
+        <!--  *** checkbox -->
+        <ng-container *ngIf="dynamicValidationForm.isCheckbox">
+          <div class="mb-3">
+            <div class="form-check">
+              <input
+                [ngClass]="{ 'is-invalid' : dynamicValidationForm.isCheckbox.validate && formGroup.get(dynamicValidationForm.formControlName)?.invalid , 'is-valid' : dynamicValidationForm.isCheckbox.validate && formGroup.get(dynamicValidationForm.formControlName)?.valid}"
+                [formControlName]="dynamicValidationForm.formControlName" [id]="dynamicValidationForm.id" [required]="dynamicValidationForm.isCheckbox.validate"
+                type="checkbox" class="form-check-input"><!-- why this checkbox can't bind -->
+              <label class="form-check-label" [for]="dynamicValidationForm.id">{{ dynamicValidationForm.label }}</label>
+              <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.errors?.['required']"
+                   class="invalid-feedback">
+                {{ dynamicValidationForm.invalidMessage }}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.value" class="invalid-feedback">
+            {{ dynamicValidationForm.invalidMessage }}
+          </div>
+        </ng-container>
+
+
+        <!--  *** date -->
+        <ng-container *ngIf="dynamicValidationForm.isDate">
+          <div class="mb-3">
+              <label class="form-label" [for]="dynamicValidationForm.id">{{ dynamicValidationForm.label }}</label>
+              <input [ngClass]="{ 'is-invalid' :  formGroup.get(dynamicValidationForm.formControlName)?.invalid , 'is-valid' : formGroup.get(dynamicValidationForm.formControlName)?.valid}" [formControlName]="dynamicValidationForm.formControlName" [id]="dynamicValidationForm.id" type="date" class="form-control"  required> <!-- why this checkbox can't bind -->
+              <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.errors?.['required']" class="invalid-feedback" >
+                {{dynamicValidationForm.invalidMessage}}
+              </div>
+            </div>
+          <div *ngIf="formGroup.get(dynamicValidationForm.formControlName)?.value" class="invalid-feedback" >
+            {{dynamicValidationForm.invalidMessage}}
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="dynamicValidationsForm">
+        <div class="btn-group">
+          <button  type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
+          <button  class="btn btn-warning" (click)="onClear()">Clear</button>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</ng-container>

@@ -1,0 +1,29 @@
+<div class="mt-5">
+  <dynamic-table
+    [tableTitle]="tableTitle"
+    [data]="data"
+    [subData]="subData"
+    [headerColumns]="headerColumns"
+    [subHeaderColumns]="subHeaderColumns"
+    [dataId]="dataId"
+    [disableEditButton]="true"
+    [enableNestedTable]="enableNestedTable"
+    (editEvent)="setEditEvent($event)"
+    (removeEvent)="setRemoveEvent($event)"
+    (treeTableEvent)="setTreeTableEvent($event)"
+    (closeTreeTableEvent)="setCloseTreeTableEvent()"
+    (getData)="setInitialData($event)">
+  </dynamic-table>
+</div>
+<div class="m-5">
+  <dynamic-validation-form
+    [formTitle]="formTitle"
+    [formGroup]="formGroup"
+    [dynamicValidationsForm]="dynamicValidationsForm"
+    (getFormGroup)="setInitialFormGroup($event)"
+    (submitEvent)="setSubmitEventFormGroup()"
+    (clearEvent)="setClearEventFormGroup()">
+  </dynamic-validation-form>
+</div>
+
+

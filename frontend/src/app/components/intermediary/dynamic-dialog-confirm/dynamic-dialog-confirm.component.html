@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol class="alert-success" id="confirm" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+    <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+  </symbol>
+  <symbol class="alert-warning" id="warning" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+  </symbol>
+  <symbol class="alert-danger" id="error" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
+  </symbol>
+</svg>
+
+<ng-container *ngIf="visible">
+  <div class="modal bg-secondary bg-opacity-50 d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <svg class="bi flex-shrink-0 me-2 " width="24" height="24" role="img" ><use [attr.href]="'#'+dynamicDialogConfirm.type"/></svg>
+            {{ dynamicDialogConfirm.dialogTitle }}
+          </h5>
+          <ng-container *ngIf="cancelAble">
+            <button type="button" class="btn-close" (click)="onCancel()"></button>
+          </ng-container>
+        </div>
+        <div class="modal-body">
+          <p>{{ dynamicDialogConfirm.content }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onClose()">Close</button>
+          <ng-container *ngIf="dynamicDialogConfirm.type === 'confirm' || dynamicDialogConfirm.type === 'warning'">
+            <button type="button" class="btn btn-primary" (click)="onOk()">Ok</button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
