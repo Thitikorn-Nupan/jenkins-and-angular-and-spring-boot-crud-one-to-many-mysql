@@ -28,7 +28,7 @@ ENV MYSQL_DATABASE $DATABASE
 # The official MySQL Docker image automatically executes .sh, .sql, and .sql.gz
 # Note, by default it looking to base root dir as api-using-spring-boot-apply-custom-service-3-crud-mysql-v2\init_db.sql
 # COPY ./init_db.sql/ /docker-entrypoint-initdb.d/
-COPY ./dockerfiles/database/init_db.sql /docker-entrypoint-initdb.d/
+COPY ./backend/dockerfiles/database/init_db.sql /docker-entrypoint-initdb.d/
 
 # Expose port 3306 to allow connections to the database
 EXPOSE 3306
