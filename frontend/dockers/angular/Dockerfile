@@ -36,7 +36,7 @@ WORKDIR /usr/share/nginx/html
 
 COPY --from=angular /home/app/dist/frontend/browser /usr/share/nginx/html
 # Copy your custom nginx.conf
-COPY /frontend/../../nginx.conf /etc/nginx/conf.d/default.conf
+COPY /frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Importance
 CMD ["nginx", "-g", "daemon off;"]
