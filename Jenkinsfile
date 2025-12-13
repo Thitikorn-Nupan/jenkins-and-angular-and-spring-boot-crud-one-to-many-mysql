@@ -107,7 +107,7 @@ pipeline {
 
 
 
-            stage('Build docker container app') {
+            stage('Build docker container backend app') {
                 steps {
                     sh "docker build -t springboot:latest --build-arg JAR_FILE=${env.JAR_TARGET} --build-arg JDBC_USERNAME=${env.DOCKER_DB_USERNAME} --build-arg JDBC_PASSWORD=${env.DOCKER_DB_PASSWORD} --build-arg JDBC_DATABASE=${env.DOCKER_DB_NAME} --build-arg IP4=${env.IP4} . -f backend/dockerfiles/app/Dockerfile"
                 }
@@ -121,7 +121,7 @@ pipeline {
 
 
 
-            stage('Deploy docker image app') {
+            stage('Deploy docker image backend app') {
                 steps {
                     sh "docker run --name ${env.DOCKER_BACKEND_IMAGE_NAME} -p ${env.DOCKER_APP_PORT_REMOTE}:6789 -d springboot:latest"
                 }
@@ -132,6 +132,31 @@ pipeline {
                       }
                 }
             }
+
+            stage('Build docker container frontend app') {
+                 steps {
+                    sh "docker build -t angular:latest -f frontend/dockers/angular/Dockerfile ."
+                 }
+                 post {
+                      success {
+                          echo 'After build successfully.'
+                          sh 'docker images' // check is image create
+                      }
+                 }
+            }
+
+
+           stage('Deploy docker image frontend app') {
+                steps {
+                   sh "docker run --name ${DOCKER_UI_CONTAINER_NAME} -p ${env.DOCKER_UI_NGINX_PORT_REMOTE}:8000 -d angular:latest"
+                }
+                post {
+                     success {
+                         echo 'After run successfully.'
+                         sh 'docker ps' // check is container running create
+                     }
+                }
+           }
 
         }
 
