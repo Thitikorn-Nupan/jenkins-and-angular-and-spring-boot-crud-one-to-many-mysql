@@ -11,13 +11,13 @@ WORKDIR /home/app
 
 # Copy files from local machine to virtual directory in docker image
 # Note ../.. means you are position on build-basic-webapp-using-angular and . after ../.. means copy ../.. to WORKDIR <...>
-COPY ../../package*.json /home/app
+COPY /frontend/../../package*.json /home/app
 
 # npm ci == npm clean install
 RUN npm ci
 
 # after install copy all to /home/app
-COPY ../.. /home/app
+COPY /frontend/../.. /home/app
 
 # Note npm clean install = npm ci
 #RUN npm clean install && npm run build
@@ -34,7 +34,7 @@ WORKDIR /usr/share/nginx/html
 # Copying compiled code and nginx config to different folder # NOTE: This path may change according to your project's output folder (see on angular.json file)
 # focus on /home/app/... it should follow WORKDIR angular
 
-COPY --from=angular /home/app/dist/basic-ui-using-angular/browser /usr/share/nginx/html
+COPY --from=angular /home/app/dist/frontend/browser /usr/share/nginx/html
 # Copy your custom nginx.conf
 COPY ../../nginx.conf /etc/nginx/conf.d/default.conf
 
