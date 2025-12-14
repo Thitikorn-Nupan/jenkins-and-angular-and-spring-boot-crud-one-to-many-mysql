@@ -6,7 +6,7 @@ pipeline {
             // you have to call tru env.<var name> ex, env.DOMAIN
             JAR_TARGET = 'backend/target/backend-0.0.1-SNAPSHOT.jar'
             PATH_DEMO_PROPERTIES = 'B:\\env\\demo-info\\docker_info.properties'
-            PATH_DEMO_PROPERTIES_DOCKER_COMPOSE = 'B:\\env\\demo-info\\.env'
+            PATH_DEMO_PROPERTIES_DOCKER_COMPOSE = 'B:/env/demo-info/.env'
             DOCKER_BACKEND_IMAGE_NAME = 'backend-app'
             DOCKER_UI_CONTAINER_NAME = 'angular-and-nginx-app'
             DOCKER_UI_NGINX_PORT_REMOTE = '8080'
