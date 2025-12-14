@@ -45,7 +45,6 @@ pipeline {
 
             stage('Build + Deploy docker container backend and database') {
                 steps {
-                   // docker-compose --env-file B:/env/demo-info/.env -f backend/dockercomposes/docker-compose.yml up -d
                    sh "docker-compose --env-file ${env.PATH_ENV_DOCKER_COMPOSE} -f backend/dockercomposes/docker-compose.yml up -d"
                 }
                 post {
