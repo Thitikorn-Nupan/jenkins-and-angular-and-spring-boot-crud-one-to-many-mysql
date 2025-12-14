@@ -14,10 +14,8 @@ pipeline {
             stage('Before initial check env file') {
                 steps {
                     script {
-                        if (fileExists(PATH_ENV_DOCKER_COMPOSE)) {
-                            echo 'File found! Proceed with actions.'
-                        } else {
-                            echo 'File not found. Skipping some actions.'
+                        if (!fileExists(PATH_ENV_DOCKER_COMPOSE)) {
+                            error("Error env file didn't exist : ${env.PATH_ENV_DOCKER_COMPOSE}")
                         }
                     }
                 }
@@ -45,6 +43,7 @@ pipeline {
 
             stage('Build + Deploy docker container backend and database') {
                 steps {
+                   // Note --env-file it's gonna thu docker-compose-database.yml,docker-compose-springboot.yml !!!
                    sh "docker-compose --env-file ${env.PATH_ENV_DOCKER_COMPOSE} -f backend/dockercomposes/docker-compose.yml up -d"
                 }
                 post {
