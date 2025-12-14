@@ -1,0 +1,46 @@
+version: '3'
+services:
+  backend:
+    container_name: springboot
+    build:
+      # way to accessing Dockerfile on folder
+      #  *** Importance before. build image
+      #  ../ mean you'll complies on dockercomponses folder
+      #  ../.. mean you'll complies on spring-boot-on-docker-app-docker-componse folder
+      #  That's way you got error target/*.jar not found
+      #  ** Because you forget to set context path !!
+      #  relative to spring-boot-on-docker-app-docker-componse command running directory (../..) means this folder
+      context: ../..
+      args:
+        # specify args to Dockerfile (follow Dockerfile args)
+        # Note, you can get env properties on env_file:.env (below) , So meaning order of line it is not importance ?
+        JAR_FILE : '/backend/target/backend-0.0.1-SNAPSHOT.jar'
+        JDBC_USERNAME : '${MYSQLD_USERNAME}'
+        JDBC_PASSWORD : '${MYSQLD_PASSWORD}'
+        JDBC_DATABASE : '${MYSQLD_DATABASE}'
+        IP4 : 'localhost' ## Now you can use localhost because database and backend run on same container
+      # that why target/*.jar found
+      dockerfile: backend/dockerfiles/app/Dockerfile # specify path to Dockerfile it starts on current folder application
+    image: springboot:latest
+    env_file: # *** import your env file
+      - .env
+    environment: # environmental variables for instead  Spring Boot application.prop file
+      # - spring.datasource.url=jdbc:mysql://database:3306/${MYSQLD_DATABASE}?allowPublicKeyRetrieval=true Or
+      # Note !! onside container we connect by port internal not expose port
+      - spring.datasource.url=jdbc:mysql://database:3306/${MYSQLD_DATABASE}
+      - spring.datasource.username=${MYSQLD_USERNAME}
+      - spring.datasource.password=${MYSQLD_PASSWORD}
+    ports:
+      - '${SPRING_BOOT_PORT_REMOTE}:6789'
+      #    links:
+      ## links instructs Docker to link containers over a network. When we link containers, Docker creates environment variables and adds containers to the known hosts list so they can discover each other.
+      ## However, Docker Compose deprecates it since version 2 because of the introduction of the network.
+    #      - database
+    depends_on:
+      ## depends_on is a Docker Compose keyword to set the order in which services must start and stop.
+      ## there are limitations because depends_on doesn’t explicitly wait for dependencies to be ready.
+      - database
+    networks:
+      - springboot-mysql-net
+#    stdin_open: true # stdin_open and tty: keep open the terminal after building container
+#    tty: true

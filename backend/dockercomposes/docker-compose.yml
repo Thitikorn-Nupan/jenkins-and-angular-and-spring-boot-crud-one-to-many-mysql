@@ -1,0 +1,49 @@
+##
+## Advance way ** extend another docker compose
+##
+## One docker compose have 2 service
+## backend (Spring Boot) and database (MySQL database image)
+## Networks it is importance for config database in spring boot
+version: '3'
+
+services:
+ # Order is importance
+ # Service name should be same name your extend
+  database:
+    extends:
+      file: docker-compose-database.yml
+      service: database
+
+  backend:
+    extends:
+      file: docker-compose-springboot.yml
+      service: backend
+  # don't forget db it has to use accessing database (jdbc:mysql://db:3306/books)
+
+
+volumes: # for storing value on container
+  information-database: # define volume name as information-database
+    driver: local # use only current pc
+
+networks: # It's Importance. Create a docker network to communicate Spring boot application and MySQL database
+  # Here springboot-mysql-net is the network name.
+  springboot-mysql-net:
+
+
+# Step to run
+# case you use default naming of docker compose as docker-compose.yml
+# 1. docker-compose -f dockercomposes/docker-compose.yml up -d --build
+# And you can specify path with -f <path to docker compose>
+# 1.1 docker-compose -f dockercomposes/docker-compose.yml up -d --build --name backend-and-database
+# config env file when build image -e <path to env>
+# ***
+# 1.2 docker-compose  --env-file configs.env -f dockercomponses/one/docker-compose.yml up -d --build database
+
+# way to access container
+# 3. docker exec -it <container id> sh
+# ** now you can use command as linux note this case mysql is on /var/lib/mysql/
+# 3.1 exit ** for leaving container
+
+# when container created
+# all service will be inside container
+# as spring-boot-on-docker-app-docker-componse (container  name) have database , app,...

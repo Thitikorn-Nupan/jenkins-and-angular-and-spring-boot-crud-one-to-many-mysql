@@ -1,0 +1,44 @@
+##
+## This docker compose file for service's database
+##
+version: '3'
+
+services:
+
+  database:
+
+    container_name: database # *** define container name
+    restart: always # I ask docker-compose.yml to always restart this container if it fails.
+    image: mysql:latest
+    ## --env-file flag is about (and only) substitution in compose file
+    env_file: # *** import your .env file ** have to no named ?
+      - .env
+    environment:
+      - MYSQL_DATABASE=${MYSQLD_DATABASE}
+      - MYSQL_USER=${MYSQLD_USERNAME}
+      - MYSQL_PASSWORD=${MYSQLD_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=54321 # if MYSQL_PASSWORD didn't set I can access database using root , password
+    ports:
+      - '${MYSQLD_PORT_REMOTE}:3306'
+    volumes: # for storing value on container
+      # Mount the local 'db_init' folder into the container's init directory
+      # Note, use :ro for executed on first run only
+      # specify file
+      # - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
+      # specify all files in specify dir
+      - ./scripts:/docker-entrypoint-initdb.d:ro
+      # second way use with your volume for storing data (use volume name instead folder name)
+      - information-database:/var/lib/mysql
+    networks: # It's Importance. Create a docker network to communicate Spring boot application and MySQL database
+      - springboot-mysql-net
+
+
+
+volumes: # for storing value on container
+  information-database: # define volume name as information-database
+    driver: local # use only current pc
+  # Mount the local 'db' directory to the container's init directory
+
+networks: # It's Importance. Create a docker network to communicate Spring boot application and MySQL database
+  # Here springboot-mysql-net is the network name.
+  springboot-mysql-net:

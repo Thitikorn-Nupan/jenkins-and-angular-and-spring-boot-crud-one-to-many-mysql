@@ -51,9 +51,9 @@ pipeline {
 
 
 
-            stage('Build + Deploy docker container backend and database') {
+            stage('Build docker container database') {
                 steps {
-                   sh "docker-compose -f /backend/dockercomposes/docker-compose.yml up -d --build"
+                   sh "docker build -t mysql:latest --build-arg USERNAME=${env.DOCKER_DB_USERNAME} --build-arg PASSWORD=${env.DOCKER_DB_PASSWORD} --build-arg DATABASE=${env.DOCKER_DB_NAME} .  -f backend/dockerfiles/database/Dockerfile"
                 }
                 post {
                      success {
@@ -63,6 +63,74 @@ pipeline {
                 }
             }
 
+
+
+           stage('Deploy docker image database') {
+                steps {
+                   sh "docker run -d --name=mysql_database -p ${env.DOCKER_DB_PORT_REMOTE}:3306 -e MYSQL_ROOT_PASSWORD=${env.DOCKER_DB_PASSWORD} -it mysql:latest"
+                }
+                post {
+                     success {
+                         echo 'After run successfully.'
+                         sh 'docker ps' // check is container running create
+                     }
+                }
+            }
+
+            stage('Build maven') {
+                steps {
+                    // Shows current working directory (e.g., /var/jenkins_home/workspace/my-pipeline)
+                    sh 'pwd'
+                    // Go to target dir
+                    dir('backend/target') {
+                        echo 'Before build jar'
+                        sh "ls -l"
+                    }
+                    // Returns to the original working directory
+                    sh 'pwd'
+                    dir('backend') {
+                       // Builds the Spring Boot application using maven
+                       sh "mvn clean install -DskipTests"
+                    }
+                    sh 'pwd'
+                    // Returns to the original working directory
+                    // Go to target dir
+                    dir('backend/target') {
+                        echo 'After build jar'
+                        sh "ls -l"
+                    }
+                    // Returns to the original working directory
+                    sh 'pwd'
+                }
+            }
+
+
+
+            stage('Build docker container backend app') {
+                steps {
+                    sh "docker build -t springboot:latest --build-arg JAR_FILE=${env.JAR_TARGET} --build-arg JDBC_USERNAME=${env.DOCKER_DB_USERNAME} --build-arg JDBC_PASSWORD=${env.DOCKER_DB_PASSWORD} --build-arg JDBC_DATABASE=${env.DOCKER_DB_NAME} --build-arg IP4=${env.IP4} . -f backend/dockerfiles/app/Dockerfile"
+                }
+                post {
+                     success {
+                         echo 'After build successfully.'
+                         sh 'docker images' // check is image create
+                     }
+                }
+            }
+
+
+
+            stage('Deploy docker image backend app') {
+                steps {
+                    sh "docker run --name ${env.DOCKER_BACKEND_IMAGE_NAME} -p ${env.DOCKER_APP_PORT_REMOTE}:6789 -d springboot:latest"
+                }
+                post {
+                      success {
+                          echo 'After run successfully.'
+                          sh 'docker ps' // check is image running
+                      }
+                }
+            }
 
             stage('Build docker container frontend app') {
                  steps {
