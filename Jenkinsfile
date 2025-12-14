@@ -4,10 +4,7 @@ pipeline {
     agent any
     environment {
             // you have to call tru env.<var name> ex, env.DOMAIN
-            JAR_TARGET = 'backend/target/backend-0.0.1-SNAPSHOT.jar'
-            PATH_DEMO_PROPERTIES = 'B:\\env\\demo-info\\docker_info.properties'
-            PATH_DEMO_PROPERTIES_DOCKER_COMPOSE = 'B:/env/demo-info/.env'
-            DOCKER_BACKEND_IMAGE_NAME = 'backend-app'
+            PATH_ENV_DOCKER_COMPOSE = 'B:/env/demo-info/.env'
             DOCKER_UI_CONTAINER_NAME = 'angular-and-nginx-app'
             DOCKER_UI_NGINX_PORT_REMOTE = '8080'
     }
@@ -19,13 +16,8 @@ pipeline {
                 steps {
                     script {
                         // def props = readProperties file: 'info.properties' // root path
-                        def props = readProperties file: env.PATH_DEMO_PROPERTIES // abs path
-                        env.DOCKER_APP_PORT_REMOTE = props['DOCKER_APP_PORT_REMOTE']
-                        env.DOCKER_DB_USERNAME = props['DOCKER_DB_USERNAME']
-                        env.DOCKER_DB_PASSWORD = props['DOCKER_DB_PASSWORD']
-                        env.DOCKER_DB_NAME = props['DOCKER_DB_NAME']
-                        env.DOCKER_DB_PORT_REMOTE = props['DOCKER_DB_PORT_REMOTE']
-                        env.IP4 = props['IP4']
+                        def props = readProperties file: env.PATH_ENV_DOCKER_COMPOSE // abs path
+                        echo "${env}"
                     }
                 }
            }
@@ -42,7 +34,6 @@ pipeline {
             }
 
 
-
             stage('Checkout git repo') {
                 steps {
                     // Checks out the source code from your Git repository. *** Note, by default it will pull repo to C:\ProgramData\Jenkins\.jenkins\workspace\...
@@ -53,8 +44,8 @@ pipeline {
 
             stage('Build + Deploy docker container backend and database') {
                 steps {
-                   // docker-compose --env-file B:\env\demo-info\.env -f backend/dockercomposes/docker-compose.yml up -d
-                   sh "docker-compose --env-file ${env.PATH_DEMO_PROPERTIES_DOCKER_COMPOSE} -f backend/dockercomposes/docker-compose.yml up -d"
+                   // docker-compose --env-file B:/env/demo-info/.env -f backend/dockercomposes/docker-compose.yml up -d
+                   sh "docker-compose --env-file ${env.PATH_ENV_DOCKER_COMPOSE} -f backend/dockercomposes/docker-compose.yml up -d"
                 }
                 post {
                      success {
