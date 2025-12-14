@@ -50,10 +50,9 @@ pipeline {
             }
 
 
-
             stage('Build + Deploy docker container backend and database') {
                 steps {
-                   sh "docker-compose -f backend/dockercomposes/docker-compose.yml up -d --build"
+                   sh "docker-compose -f backend/dockercomposes/docker-compose.yml up -d"
                 }
                 post {
                      success {

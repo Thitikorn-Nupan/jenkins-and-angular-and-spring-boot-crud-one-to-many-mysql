@@ -20,7 +20,7 @@ services:
         JDBC_DATABASE : '${MYSQLD_DATABASE}'
         IP4 : 'localhost' ## Now you can use localhost because database and backend run on same container
       # that why target/*.jar found
-      dockerfile: backend/dockerfiles/app/Dockerfile # specify path to Dockerfile it starts on current folder application
+      dockerfile: /backend/dockerfiles/app/Dockerfile # specify path to Dockerfile it starts on current folder application
     image: springboot:latest
     env_file: # *** import your env file
       - .env
