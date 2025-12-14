@@ -3,7 +3,6 @@ pipeline {
     // any คือ ใช้ executor ใด ๆ ก็ได้
     agent any
     environment {
-            // you have to call tru env.<var name> ex, env.DOMAIN
             PATH_ENV_DOCKER_COMPOSE = 'B:/env/demo-info/.env'
             DOCKER_UI_CONTAINER_NAME = 'angular-and-nginx-app'
             DOCKER_UI_NGINX_PORT_REMOTE = '8080'
@@ -12,12 +11,14 @@ pipeline {
     // stages as working Flows tell Pipeline what gonna do
     stages {
 
-            stage('Before init get key from properties file') {
+            stage('Before initial check env file') {
                 steps {
                     script {
-                        // def props = readProperties file: 'info.properties' // root path
-                        def props = readProperties file: env.PATH_ENV_DOCKER_COMPOSE // abs path
-                        echo "${env}"
+                        if (fileExists(PATH_ENV_DOCKER_COMPOSE)) {
+                            echo 'File found! Proceed with actions.'
+                        } else {
+                            echo 'File not found. Skipping some actions.'
+                        }
                     }
                 }
            }
