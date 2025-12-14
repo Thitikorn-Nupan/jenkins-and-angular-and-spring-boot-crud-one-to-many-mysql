@@ -22,8 +22,9 @@ services:
       # that why target/*.jar found
       dockerfile: /backend/dockerfiles/app/Dockerfile # specify path to Dockerfile it starts on current folder application
     image: springboot:latest
-    env_file: # *** import your env file
-      - .env
+    ## Note , i will pass env file as docker-compose --env-file B:\env\demo-info\.env -f backend/dockercomposes/docker-compose.yml up -d
+    #env_file: # *** import your env file
+    #  - .env
     environment: # environmental variables for instead  Spring Boot application.prop file
       # - spring.datasource.url=jdbc:mysql://database:3306/${MYSQLD_DATABASE}?allowPublicKeyRetrieval=true Or
       # Note !! onside container we connect by port internal not expose port
