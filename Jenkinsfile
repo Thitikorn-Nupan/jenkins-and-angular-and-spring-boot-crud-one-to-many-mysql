@@ -5,7 +5,7 @@ pipeline {
     environment {
             PATH_ENV_DOCKER_COMPOSE = 'B:/env/demo-info/.env'
             DOCKER_UI_CONTAINER_NAME = 'angular-and-nginx-app'
-            DOCKER_UI_NGINX_PORT_REMOTE = '8081'
+            DOCKER_UI_NGINX_PORT_REMOTE = '8080'
     }
 
     // stages as working Flows tell Pipeline what gonna do
