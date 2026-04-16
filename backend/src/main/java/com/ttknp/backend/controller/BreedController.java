@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@CommonRestAPI(configPath = {"/api/breed","/api/breeds"}, configOrigins = {"http://localhost:8080","http://localhost:4200"})
+@CommonRestAPI(configPath = {"/api/breed","/api/breeds"}, configOrigins = {"http://localhost:8081","http://localhost:4200"})
 public class BreedController {
     private final BreedService service;
 
