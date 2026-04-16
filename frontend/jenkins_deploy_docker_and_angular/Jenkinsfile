@@ -6,7 +6,7 @@ pipeline {
             // you have to call tru env.<var name> ex, env.DOMAIN
             DOCKER_IMAGE_NAME = 'ui-app'
             DOCKER_CONTAINER_NAME = 'angular-and-nginx'
-            DOCKER_NGINX_PORT_REMOTE = '8080'
+            DOCKER_NGINX_PORT_REMOTE = '8081'
     }
 
     // stages as working Flows tell Pipeline what gonna do
