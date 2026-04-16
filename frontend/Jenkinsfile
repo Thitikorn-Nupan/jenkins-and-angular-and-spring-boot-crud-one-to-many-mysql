@@ -20,7 +20,6 @@ pipeline {
                 }
             }
 
-
             stage('Checkout git repo') {
                 steps {
                     // Checks out the source code from your Git repository. *** Note, by default it will pull repo to C:\ProgramData\Jenkins\.jenkins\workspace\...
